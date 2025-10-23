@@ -29,3 +29,21 @@ Guía turística con información y rutas personalizadas.
 - Exploración de lugares cercanos.
 - Sugerencias según el clima
 - Panel para negocios donde comercios o entidades turísticas pueden subir sus propios lugares y eventos desde una web o portal administrativo.
+
+### StyleSync
+App para peluquerías y barberías que permite agendar citas, explorar estilos y recibir recomendaciones personalizadas.
+
+- Chatbot que sugiere cortes o colores según tipo de cabello.
+- Agendamiento de citas y recordatorios automáticos.
+- Escaneo de QR para confirmar asistencia o acumular puntos.
+- Notificaciones de promociones o disponibilidad de servicios.
+- Integración con Google Maps para mostrar ubicación del negocio.
+
+### TutorLink
+App de tutorías académicas que conecta estudiantes con tutores en distintas materias.
+
+- Registro y autenticación con roles (tutor/estudiante).
+- Agenda para programar sesiones y ver disponibilidad.
+- Chatbot académico que responde dudas básicas o recomienda tutores.
+- API externa (YouTube o Wikipedia) para recursos educativos.
+- Notificaciones cuando una tutoría es aceptada o modificada.
