@@ -47,3 +47,12 @@ App de tutorías académicas que conecta estudiantes con tutores en distintas ma
 - Chatbot académico que responde dudas básicas o recomienda tutores.
 - API externa (YouTube o Wikipedia) para recursos educativos.
 - Notificaciones cuando una tutoría es aceptada o modificada.
+
+### PFinance
+App de inversiones y trading
+
+- Explorador de activos con parametros importantes y graficas
+- Noticias financieras sobre cada activo
+- Mini cursos para capacitar a los usuarios a tomar las mejores deciciones financieras
+- Chatbot para analizar y sugerir inversiones o deciciones financieras en base a el perfil y los objetivos del usuario
+- Seguimiento de ingresos y gastos con sugerencias de finanzas personales
