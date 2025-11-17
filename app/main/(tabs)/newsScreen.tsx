@@ -1,266 +1,325 @@
+// --- NewsScreen (versión actualizada con cambios del diseño) ---
+
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Image,
-    Linking,
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  View,
+  Linking,
 } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 export default function NewsScreen() {
   const [news, setNews] = useState<any[]>([]);
+  const [filteredNews, setFilteredNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [refreshing, setRefreshing] = useState(false);
-  const [page, setPage] = useState(1);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [category, setCategory] = useState("featured");
+  const [search, setSearch] = useState("");
 
   const API_KEY = process.env.EXPO_PUBLIC_NEWS_API_KEY;
 
-  const buildUrl = (pageNumber: number) =>
-    `https://newsapi.org/v2/everything?q=(finanzas OR inversion OR "mercados financieros" OR bolsa OR "criptomonedas" OR economia OR "tasa de interés" OR "política monetaria" OR Colombia OR Latinoamérica)&language=es&pageSize=10&page=${pageNumber}&sortBy=publishedAt&apiKey=${API_KEY}`;
+  const categoryQueries: any = {
+    featured: "finanzas OR economía OR inversión OR mercados financieros",
+    criptos: "bitcoin OR ethereum OR criptomonedas OR crypto",
+    acciones: "bolsa OR acciones OR mercado bursátil OR wall street",
+    divisas: "dólar OR euro OR divisas OR forex OR tipo de cambio",
+  };
 
-  const fetchNews = async (pageNumber = 1, append = false) => {
+  const fetchNews = async () => {
+    setLoading(true);
+    const query = categoryQueries[category];
+
+    const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(
+      query
+    )}&language=es&sortBy=publishedAt&pageSize=10&apiKey=${API_KEY}`;
+
     try {
-      if (!append) setLoading(true);
-      setError("");
-
-      const response = await fetch(buildUrl(pageNumber));
+      const response = await fetch(url);
       const data = await response.json();
 
       if (data.status !== "ok") {
-        setError(`Error de API: ${data.message || "Desconocido"}`);
+        setNews([]);
         return;
       }
 
-      const filteredArticles = (data.articles || []).filter((a: any) => {
-        const title = a.title?.toLowerCase() || "";
-        const desc = a.description?.toLowerCase() || "";
-        const source = a.source?.name?.toLowerCase() || "";
-
-        const keywords = [
-          "finanz",
-          "econom",
-          "bolsa",
-          "cripto",
-          "mercado",
-          "inversi",
-          "banco",
-          "inflación",
-          "dólar",
-          "acciones",
-          "tasas",
-          "negocios",
-        ];
-
-        const isRelevant =
-          keywords.some((k) => title.includes(k) || desc.includes(k)) ||
-          ["forbes", "expansión", "el economista", "bloomberg", "milenio"].some(
-            (f) => source.includes(f)
-          );
-
-        return isRelevant;
-      });
-
-      if (append) setNews((prev) => [...prev, ...filteredArticles]);
-      else setNews(filteredArticles);
+      setNews(data.articles);
     } catch {
-      setError("Error al conectar con el servidor.");
+      setNews([]);
     } finally {
       setLoading(false);
-      setRefreshing(false);
-      setLoadingMore(false);
     }
   };
 
   useEffect(() => {
     fetchNews();
-    const interval = setInterval(() => fetchNews(1), 1000 * 60 * 15);
-    return () => clearInterval(interval);
-  }, []);
+  }, [category]);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    setPage(1);
-    fetchNews(1);
+  useEffect(() => {
+    if (search.trim() === "") setFilteredNews(news);
+    else {
+      const term = search.toLowerCase();
+      const result = news.filter(
+        (n) =>
+          (n.title?.toLowerCase() || "").includes(term) ||
+          (n.description?.toLowerCase() || "").includes(term)
+      );
+      setFilteredNews(result);
+    }
+  }, [search, news]);
+
+  const sectionTitles: any = {
+    featured: "Featured News",
+    criptos: "Crypto News",
+    acciones: "Stocks News",
+    divisas: "Forex & Currencies",
   };
-
-  const loadMore = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    setLoadingMore(true);
-    fetchNews(nextPage, true);
-  };
-
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#000" />
-        <Text style={{ marginTop: 10, color: "#555" }}>Cargando noticias...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.center}>
-        <Text style={{ color: "#d9534f", textAlign: "center", marginHorizontal: 20 }}>
-          {error}
-        </Text>
-        <TouchableOpacity onPress={() => fetchNews(page)} style={styles.retryBtn}>
-          <Text style={styles.retryText}>Reintentar</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor="#000"
+    <View style={styles.container}>
+      {/* HEADER */}
+      <View style={styles.headerWrapper}>
+        <Text style={styles.header}>NEWS</Text>
+        <View style={styles.headerLine} />
+      </View>
+
+      {/* SEARCH BAR */}
+      <View style={styles.searchWrapper}>
+        <Feather name="search" size={20} color="#555" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search news..."
+          placeholderTextColor="#777"
+          value={search}
+          onChangeText={setSearch}
         />
-      }
-    >
-      {news.map((article, index) => (
-        <TouchableOpacity
-          key={index}
-          style={styles.card}
-          activeOpacity={0.9}
-          onPress={() => {
-            if (article.url) Linking.openURL(article.url);
-          }}
-        >
-          {article.urlToImage && (
-            <Image source={{ uri: article.urlToImage }} style={styles.image} />
-          )}
-          <View style={styles.cardContent}>
-            <Text style={styles.title}>{article.title}</Text>
+      </View>
 
-            {article.author && (
-              <Text style={styles.author}>✍️ {article.author}</Text>
-            )}
+      {/* CATEGORY BUTTONS */}
+      <View style={styles.categoryContainer}>
+        <View style={styles.categoryInner}>
 
-            {article.publishedAt && (
-              <Text style={styles.date}>
-                {new Date(article.publishedAt).toLocaleString("es-ES", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })}
-              </Text>
-            )}
-
-            <Text style={styles.desc}>
-              {article.description
-                ? article.description
-                : "Lee la noticia completa..."}
-            </Text>
-
-            <Text style={styles.link}>Ver más →</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-
-      <View style={{ alignItems: "center", marginBottom: 30 }}>
-        {loadingMore ? (
-          <ActivityIndicator size="small" color="#000" />
-        ) : (
-          <TouchableOpacity onPress={loadMore} style={styles.loadMoreBtn}>
-            <Text style={styles.loadMoreText}>Cargar más noticias</Text>
+          {/* Featured */}
+          <TouchableOpacity
+            onPress={() => setCategory("featured")}
+            style={[
+              styles.categoryButton,
+              category === "featured" && styles.categoryButtonActive
+            ]}
+          >
+            <Feather
+              name="star"
+              size={24}
+              color={category === "featured" ? "#131313" : "#FFFFFF"}
+            />
           </TouchableOpacity>
+
+          {/* Criptos */}
+          <TouchableOpacity
+            onPress={() => setCategory("criptos")}
+            style={[
+              styles.categoryButton,
+              category === "criptos" && styles.categoryButtonActive
+            ]}
+          >
+            <Feather
+              name="trending-up"
+              size={24}
+              color={category === "criptos" ? "#131313" : "#FFFFFF"}
+            />
+          </TouchableOpacity>
+
+          {/* Acciones */}
+          <TouchableOpacity
+            onPress={() => setCategory("acciones")}
+            style={[
+              styles.categoryButton,
+              category === "acciones" && styles.categoryButtonActive
+            ]}
+          >
+            <Feather
+              name="bar-chart-2"
+              size={24}
+              color={category === "acciones" ? "#131313" : "#FFFFFF"}
+            />
+          </TouchableOpacity>
+
+          {/* Divisas */}
+          <TouchableOpacity
+            onPress={() => setCategory("divisas")}
+            style={[
+              styles.categoryButton,
+              category === "divisas" && styles.categoryButtonActive
+            ]}
+          >
+            <Feather
+              name="dollar-sign"
+              size={24}
+              color={category === "divisas" ? "#131313" : "#FFFFFF"}
+            />
+          </TouchableOpacity>
+
+        </View>
+      </View>
+
+
+      {/* FEATURED NEWS */}
+      <View style={styles.featuredBox}>
+        <Text style={styles.sectionTitle}>{sectionTitles[category]}</Text>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#CFF008" style={{ marginTop: 20 }} />
+        ) : (
+          <ScrollView style={{ marginTop: 10 }}>
+
+            {filteredNews.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.card}
+                onPress={() => Linking.openURL(item.url)}
+              >
+                {item.urlToImage && (
+                  <Image source={{ uri: item.urlToImage }} style={styles.image} />
+                )}
+
+                <View style={styles.cardContent}>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.readMore}>Read news →</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+
+            {filteredNews.length === 0 && (
+              <Text style={styles.noResult}>No results found</Text>
+            )}
+          </ScrollView>
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f1f2f6", // 👈 gris claro que diferencia las tarjetas
-    paddingHorizontal: 12,
-    paddingTop: 10,
+    backgroundColor: "#131313",
+    padding: 15,
   },
-  center: {
+
+  headerWrapper: {
+    marginTop: 30,
+    marginBottom: 15,
+  },
+
+  header: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    textAlign: "center",
+    letterSpacing: 1.5,
+  },
+  headerLine: {
+    height: 1,
+    backgroundColor: "#CFF008",
+    width: "100%",
+    marginTop: 10,
+  },
+
+  /* SEARCH BAR (white) */
+  searchWrapper: {
+    marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 12,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
     flex: 1,
+    color: "#000",
+    fontSize: 15,
+  },
+
+  /* CATEGORY CONTAINER */
+  categoryContainer: {
+    borderWidth: 1,
+    borderColor: "#CFF008",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 20,
+  },
+  categoryInner: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+
+  /* EACH BUTTON = GREEN SQUARE */
+  categoryButton: {
+    width: 55,
+    height: 55,
+    backgroundColor: "#CFF008",
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f1f2f6",
   },
+
+  /* FEATURED SECTION */
+  featuredBox: {
+    borderWidth: 1,
+    borderColor: "#CFF008",
+    borderRadius: 12,
+    padding: 12,
+    flex: 1,
+  },
+  sectionTitle: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  /* NEWS CARD */
   card: {
-    backgroundColor: "#fff",
-    borderRadius: 14,
-    marginBottom: 16,
+    backgroundColor: "#1F1F1F",
+    borderRadius: 12,
+    marginBottom: 15,
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
-    borderWidth: 0.5,
-    borderColor: "#e3e3e3",
   },
   image: {
     width: "100%",
-    height: 180,
+    height: 140,
   },
   cardContent: {
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    padding: 12,
   },
   title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: "#222",
-    marginBottom: 6,
-  },
-  author: {
-    fontSize: 13,
-    color: "#666",
-    marginBottom: 3,
-  },
-  date: {
-    fontSize: 12,
-    color: "#999",
-    marginBottom: 8,
-  },
-  desc: {
-    fontSize: 14,
-    color: "#444",
-    marginBottom: 8,
-  },
-  link: {
-    color: "#007aff",
+    color: "#FFFFFF",
+    fontSize: 15,
     fontWeight: "600",
-    marginTop: 4,
+    marginBottom: 5,
   },
-  retryBtn: {
-    backgroundColor: "#007aff",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginTop: 10,
+  readMore: {
+    color: "#CFF008",
+    fontWeight: "600",
   },
-  retryText: {
-    color: "#fff",
-    fontWeight: "700",
+
+  noResult: {
+    color: "#8F8F8F",
+    textAlign: "center",
+    marginTop: 20,
   },
-  loadMoreBtn: {
-    backgroundColor: "#007aff",
-    paddingHorizontal: 22,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  loadMoreText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 14,
-  },
+
+  categoryButtonActive: {
+  backgroundColor: "#FFFFFF",
+},
+
 });
