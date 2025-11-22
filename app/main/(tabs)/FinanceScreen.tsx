@@ -219,7 +219,17 @@ export default function FinanceScreen() {
 
         <TouchableOpacity
           style={styles.aiButton}
-          onPress={() => router.push("/main/(tabs)/chatbot")}
+          onPress={() =>
+            router.push({
+              pathname: "/main/(tabs)/chatbot",
+              params: {
+                fromFinance: "true",
+                income: totalIncome.toString(),
+                expenses: totalExpenses.toString(),
+                balance: totalBalance.toString(),
+              },
+            })
+          }
         >
           <Text style={styles.aiButtonText}>
             IA suggestion based on your behavior

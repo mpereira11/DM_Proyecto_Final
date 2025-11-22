@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import React, { useRef, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -25,19 +26,54 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // 🟢 PARAMETROS QUE LLEGAN DESDE FINANZAS
+  const { fromFinance, income, expenses, balance } = useLocalSearchParams();
+
+  // 🟢 MENSAJE AUTOMÁTICO AL ENTRAR DESDE FINANZAS
+  useEffect(() => {
+    if (String(fromFinance) === "true") {
+      const welcomeMessage = `
+Veo que vienes desde tu sección de **Finanzas**.
+
+Aquí tengo tus datos más recientes:
+
+- **Ingresos:** $${income}
+- **Gastos:** $${expenses}
+- **Balance actual:** $${balance}
+
+¿Quieres que analice tu situación y te dé una recomendación personalizada?
+      `;
+
+      setMessages((prev) => [...prev, { from: "bot", text: welcomeMessage }]);
+    }
+  }, [fromFinance]);
+
   // 🔹 Consulta REAL a Gemini
   const getAIResponse = async (prompt: string) => {
     console.log("API KEY usada:", process.env.EXPO_PUBLIC_GEMINI_API_KEY);
+
     const body = {
       contents: [
         {
           parts: [
             {
               text: `
-                Eres un asesor financiero amigable. 
-                Responde de manera clara, breve y útil a las preguntas del usuario sobre 
-                finanzas personales, ahorro e inversiones.
-                Usuario: ${prompt}
+Eres un asesor financiero experto dentro de una aplicación móvil.
+
+DATOS DEL USUARIO (si están disponibles):
+- Ingresos: ${income ?? "no proporcionado"}
+- Gastos: ${expenses ?? "no proporcionado"}
+- Balance: ${balance ?? "no proporcionado"}
+
+REGLAS:
+- Siempre usa los datos del usuario para generar recomendaciones personalizadas.
+- Si el usuario responde “sí”, “dale”, “ok” o similar, debes usar los datos para hacer un análisis automático.
+- Habla de forma clara, directa y amigable.
+
+Mensaje del usuario:
+"${prompt}"
+
+Ahora genera la mejor respuesta financiera posible.
               `,
             },
           ],
@@ -60,6 +96,7 @@ export default function Chatbot() {
           body: JSON.stringify(body),
         }
       );
+
       console.log("STATUS:", response.status);
       const data = await response.json();
       console.log("GEMINI RESP:", data);
@@ -106,7 +143,6 @@ export default function Chatbot() {
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
       <View style={styles.container}>
-        
         {/* Chat */}
         <ScrollView
           ref={scrollViewRef}
@@ -122,20 +158,15 @@ export default function Chatbot() {
                 msg.from === "user" ? styles.userMsg : styles.botMsg,
               ]}
             >
-              {/* USER TEXT */}
               {msg.from === "user" ? (
                 <Text style={[styles.msgText, styles.userText]}>
                   {msg.text}
                 </Text>
               ) : (
-                /* BOT TEXT with MARKDOWN */
                 <Markdown
                   style={{
-                    body: { color: "#FFFFFF", fontSize: 15, lineHeight: 22 },
-                    strong: { color: "#CFF008" },
-                    bullet_list: { marginVertical: 4 },
-                    ordered_list: { marginVertical: 4 },
-                    list_item: { marginVertical: 2 },
+                    body: { color: "#000000", fontSize: 15, lineHeight: 22 }, // negro
+                    strong: { color: "#050609" }, // negrita oscura
                   }}
                 >
                   {msg.text}
@@ -167,20 +198,14 @@ export default function Chatbot() {
             placeholderTextColor="#777"
             style={styles.input}
             multiline
-            autoCorrect={true}
-            autoCapitalize="sentences"
-            autoComplete="off"
-            enablesReturnKeyAutomatically={true}
           />
           <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
             <Ionicons name="send" size={18} color="#050609" />
           </TouchableOpacity>
         </View>
-
       </View>
     </KeyboardAvoidingView>
   );
-
 }
 
 const styles = StyleSheet.create({
@@ -188,43 +213,40 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#050609",
   },
-
   chatContainer: {
     flex: 1,
   },
 
+  // 🟡 BURBUJA USUARIO
   message: {
     maxWidth: "85%",
     padding: 12,
     marginVertical: 6,
-    borderRadius: 8,
+    borderRadius: 12,
   },
-
   userMsg: {
     alignSelf: "flex-end",
-    backgroundColor: "#0A0A0A",
-    borderWidth: 1,
-    borderColor: "#2B2D33",
-  },
-
-  botMsg: {
-    alignSelf: "flex-start",
-    backgroundColor: "#0F1013",
+    backgroundColor: "#CFF008",
     borderWidth: 1,
     borderColor: "#CFF008",
+  },
+  userText: {
+    color: "#050609",
+    fontWeight: "600",
+    fontSize: 15,
+  },
+
+  // ⚪ BURBUJA BOT
+  botMsg: {
+    alignSelf: "flex-start",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
   },
 
   msgText: {
     fontSize: 15,
     lineHeight: 20,
-  },
-
-  userText: {
-    color: "#FFFFFF",
-  },
-
-  botText: {
-    color: "#FFFFFF",
   },
 
   inputContainer: {
@@ -234,7 +256,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-
   input: {
     flex: 1,
     backgroundColor: "#111217",
@@ -245,7 +266,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     maxHeight: 120,
   },
-
   sendButton: {
     backgroundColor: "#CFF008",
     padding: 10,
