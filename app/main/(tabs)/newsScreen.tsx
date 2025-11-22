@@ -1,18 +1,18 @@
 // --- NewsScreen (versión actualizada con cambios del diseño) ---
 
+import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Linking,
   ScrollView,
   StyleSheet,
-  TextInput,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
-  Linking,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
 
 export default function NewsScreen() {
   const [news, setNews] = useState<any[]>([]);
@@ -81,11 +81,6 @@ export default function NewsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* HEADER */}
-      <View style={styles.headerWrapper}>
-        <Text style={styles.header}>NEWS</Text>
-        <View style={styles.headerLine} />
-      </View>
 
       {/* SEARCH BAR */}
       <View style={styles.searchWrapper}>
