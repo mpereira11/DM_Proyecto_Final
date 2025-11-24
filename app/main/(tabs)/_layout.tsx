@@ -6,8 +6,8 @@ export default function TabsLayout() {
   const pathname = usePathname();
 
   // Extraer solo el nombre final de la ruta:
-  //  "/(tabs)/home"  → "home"
-  //  "/main/(tabs)/chatbot" → "chatbot"
+  //  "/(tabs)/home"  → "home"
+  //  "/main/(tabs)/chatbot" → "chatbot"
   const screen = pathname.split("/").pop();
 
   const titles: Record<string, string> = {
@@ -16,6 +16,7 @@ export default function TabsLayout() {
     chatbot: "AI Assistant",
     newsScreen: "News",
     profile: "Profile",
+    courses: "Courses",
   };
 
   const currentTitle = titles[screen ?? ""] ?? "";
@@ -103,7 +104,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="chatbot"
           options={{
-            title: "IA",
+            title: "AI",
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="chatbubble-ellipses-outline"
@@ -121,6 +122,21 @@ export default function TabsLayout() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="newspaper-outline"
+                size={size + 3}
+                color={color}
+              />
+            ),
+          }}
+        />
+
+        {/* 🔹 Courses tab, siempre visible */}
+        <Tabs.Screen
+          name="courses"
+          options={{
+            title: "Courses",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons
+                name="book-outline"
                 size={size + 3}
                 color={color}
               />
