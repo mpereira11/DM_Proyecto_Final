@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#CFF008",
+    borderColor: "#55610eff",
     marginBottom: 16,
   },
   balanceLabel: {

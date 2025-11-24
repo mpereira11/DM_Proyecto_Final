@@ -32,8 +32,8 @@ export default function TabsLayout() {
       {/* 🔥 HEADER FIJO GLOBAL */}
       <View
         style={{
-          paddingTop: 60,
-          paddingBottom: 12,
+          paddingTop: 65,
+          paddingBottom: 8,
           backgroundColor: "#050609",
           // ✅ CAMBIO CLAVE: Alinea a la izquierda (flex-start) solo en 'home', y centra en el resto.
           alignItems: screen === 'home' ? 'flex-start' : 'center',

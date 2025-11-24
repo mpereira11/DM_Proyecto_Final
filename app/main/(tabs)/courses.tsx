@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { supabase } from "@/utils/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/utils/supabase";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function CoursesScreen() {
   const { session } = useAuth();
@@ -154,7 +154,7 @@ export default function CoursesScreen() {
                 style={{
                   backgroundColor: "#0A0A0A",
                   borderWidth: 1,
-                  borderColor: "#CFF008",
+                  borderColor: "#55610eff",
                   borderRadius: 14,
                   padding: 18,
                   marginBottom: 16,

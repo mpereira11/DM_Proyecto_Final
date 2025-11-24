@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   balanceCard: {
     backgroundColor: "#111217",
     borderWidth: 1,
-    borderColor: "#CFF008",
+    borderColor: "#55610eff",
     paddingVertical: 30, // Más padding para centrar verticalmente
     paddingHorizontal: 16,
     borderRadius: 14,
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#CFF008",
+    borderColor: "#55610eff",
   },
 
   /* PERIOD SELECTOR */
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
   newsCardContainer: {
     backgroundColor: "#111217",
     borderWidth: 1,
-    borderColor: "#CFF008", // Borde neón
+    borderColor: "#55610eff", // Borde neón
     padding: 16,
     borderRadius: 14,
     marginBottom: 20,

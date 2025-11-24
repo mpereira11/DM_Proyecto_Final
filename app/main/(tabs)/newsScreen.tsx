@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   /* CATEGORY CONTAINER */
   categoryContainer: {
     borderWidth: 1,
-    borderColor: "#CFF008",
+    borderColor: "#55610eff",
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   /* FEATURED SECTION */
   featuredBox: {
     borderWidth: 1,
-    borderColor: "#CFF008",
+    borderColor: "#55610eff",
     borderRadius: 12,
     padding: 12,
     flex: 1,
