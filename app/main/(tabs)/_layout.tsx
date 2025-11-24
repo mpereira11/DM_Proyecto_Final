@@ -6,8 +6,8 @@ export default function TabsLayout() {
   const pathname = usePathname();
 
   // Extraer solo el nombre final de la ruta:
-  //  "/(tabs)/home"  → "home"
-  //  "/main/(tabs)/chatbot" → "chatbot"
+  //  "/(tabs)/home"  → "home"
+  //  "/main/(tabs)/chatbot" → "chatbot"
   const screen = pathname.split("/").pop();
 
   const titles: Record<string, string> = {
@@ -20,25 +20,33 @@ export default function TabsLayout() {
 
   const currentTitle = titles[screen ?? ""] ?? "";
 
+  // Determinar el texto del encabezado
+  // Si la pantalla actual es 'home', muestra el saludo.
+  // De lo contrario, muestra el título normal.
+  const headerText = screen === 'home' ? 'Hi, welcome back' : currentTitle;
+
+
   return (
     <View style={{ flex: 1, backgroundColor: "#050609" }}>
       {/* 🔥 HEADER FIJO GLOBAL */}
       <View
         style={{
-          paddingTop: 45,
+          paddingTop: 60,
           paddingBottom: 12,
           backgroundColor: "#050609",
-          alignItems: "center",
+          // ✅ CAMBIO CLAVE: Alinea a la izquierda (flex-start) solo en 'home', y centra en el resto.
+          alignItems: screen === 'home' ? 'flex-start' : 'center',
+          paddingHorizontal: 16, // Añade padding horizontal para que el texto no toque el borde
         }}
       >
         <Text
           style={{
             color: "white",
-            fontSize: 26,
+            fontSize: 25,
             fontWeight: "800",
           }}
         >
-          {currentTitle}
+          {headerText} 
         </Text>
 
         <View
