@@ -1,4 +1,3 @@
-// app/(tabs)/finance.tsx  (o el nombre que uses para la pestaña)
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/utils/supabase";
 import { useRouter } from "expo-router";
