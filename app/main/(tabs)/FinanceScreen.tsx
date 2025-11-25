@@ -1,4 +1,3 @@
-// app/(tabs)/finance.tsx  (o el nombre que uses para la pestaña)
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/utils/supabase";
 import { useRouter } from "expo-router";
@@ -375,7 +374,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#CFF008",
+    borderColor: "#55610eff",
     marginBottom: 16,
   },
   balanceLabel: {

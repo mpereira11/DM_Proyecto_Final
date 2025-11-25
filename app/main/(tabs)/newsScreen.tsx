@@ -81,7 +81,6 @@ export default function NewsScreen() {
 
   return (
     <View style={styles.container}>
-
       {/* SEARCH BAR */}
       <View style={styles.searchWrapper}>
         <Feather name="search" size={20} color="#555" style={styles.searchIcon} />
@@ -228,7 +227,7 @@ const styles = StyleSheet.create({
 
   /* SEARCH BAR (white) */
   searchWrapper: {
-    marginTop: 20,
+    marginTop: 0,
     marginBottom: 20,
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
   /* CATEGORY CONTAINER */
   categoryContainer: {
     borderWidth: 1,
-    borderColor: "#CFF008",
+    borderColor: "#55610eff",
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
@@ -271,7 +270,7 @@ const styles = StyleSheet.create({
   /* FEATURED SECTION */
   featuredBox: {
     borderWidth: 1,
-    borderColor: "#CFF008",
+    borderColor: "#55610eff",
     borderRadius: 12,
     padding: 12,
     flex: 1,
