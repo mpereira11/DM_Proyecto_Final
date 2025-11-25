@@ -1,6 +1,7 @@
 // --- NewsScreen (versión actualizada con cambios del diseño) ---
 
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -15,6 +16,7 @@ import {
 } from "react-native";
 
 export default function NewsScreen() {
+  const router = useRouter();
   const [news, setNews] = useState<any[]>([]);
   const [filteredNews, setFilteredNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -79,9 +81,9 @@ export default function NewsScreen() {
     divisas: "Forex & Currencies",
   };
 
+
   return (
     <View style={styles.container}>
-
       {/* SEARCH BAR */}
       <View style={styles.searchWrapper}>
         <Feather name="search" size={20} color="#555" style={styles.searchIcon} />
@@ -161,7 +163,6 @@ export default function NewsScreen() {
         </View>
       </View>
 
-
       {/* FEATURED NEWS */}
       <View style={styles.featuredBox}>
         <Text style={styles.sectionTitle}>{sectionTitles[category]}</Text>
@@ -172,20 +173,48 @@ export default function NewsScreen() {
           <ScrollView style={{ marginTop: 10 }}>
 
             {filteredNews.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.card}
-                onPress={() => Linking.openURL(item.url)}
-              >
-                {item.urlToImage && (
-                  <Image source={{ uri: item.urlToImage }} style={styles.image} />
-                )}
+              <View key={index} style={styles.card}>
 
-                <View style={styles.cardContent}>
-                  <Text style={styles.title}>{item.title}</Text>
-                  <Text style={styles.readMore}>Read news →</Text>
-                </View>
-              </TouchableOpacity>
+                {/* Press to open the article */}
+                <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
+                  {item.urlToImage && (
+                    <Image source={{ uri: item.urlToImage }} style={styles.image} />
+                  )}
+
+                  <View style={styles.cardContent}>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <Text style={styles.readMore}>Read news →</Text>
+                  </View>
+                </TouchableOpacity>
+
+                {/* 🟢 Botón: Pedir asistencia a la IA */}
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#CFF008",
+                    paddingVertical: 8,
+                    borderRadius: 8,
+                    marginTop: 10,
+                    alignItems: "center",
+                  }}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/main/(tabs)/chatbot",
+                      params: {
+                        fromNews: "1",
+                        title: item.title,
+                        description: item.description,
+                        url: item.url,
+                        image: item.urlToImage,
+                      },
+                    })
+                  }
+                >
+                  <Text style={{ color: "#050609", fontWeight: "700" }}>
+                    Preguntar a la IA
+                  </Text>
+                </TouchableOpacity>
+
+              </View>
             ))}
 
             {filteredNews.length === 0 && (
@@ -200,121 +229,108 @@ export default function NewsScreen() {
 
 
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#131313",
-    padding: 15,
-  },
-
-  headerWrapper: {
-    marginTop: 30,
-    marginBottom: 15,
-  },
-
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    textAlign: "center",
-    letterSpacing: 1.5,
-  },
-  headerLine: {
-    height: 1,
-    backgroundColor: "#CFF008",
-    width: "100%",
-    marginTop: 10,
-  },
-
-  /* SEARCH BAR (white) */
-  searchWrapper: {
-    marginTop: 20,
-    marginBottom: 20,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 12,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    color: "#000",
-    fontSize: 15,
-  },
-
-  /* CATEGORY CONTAINER */
-  categoryContainer: {
-    borderWidth: 1,
-    borderColor: "#CFF008",
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 20,
-  },
-  categoryInner: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-
-  /* EACH BUTTON = GREEN SQUARE */
-  categoryButton: {
-    width: 55,
-    height: 55,
-    backgroundColor: "#CFF008",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  /* FEATURED SECTION */
-  featuredBox: {
-    borderWidth: 1,
-    borderColor: "#CFF008",
-    borderRadius: 12,
-    padding: 12,
-    flex: 1,
-  },
-  sectionTitle: {
-    color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "700",
-  },
-
-  /* NEWS CARD */
-  card: {
-    backgroundColor: "#1F1F1F",
-    borderRadius: 12,
-    marginBottom: 15,
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    height: 140,
-  },
-  cardContent: {
-    padding: 12,
-  },
-  title: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    fontWeight: "600",
-    marginBottom: 5,
-  },
-  readMore: {
-    color: "#CFF008",
-    fontWeight: "600",
-  },
-
-  noResult: {
-    color: "#8F8F8F",
-    textAlign: "center",
-    marginTop: 20,
-  },
-
-  categoryButtonActive: {
-  backgroundColor: "#FFFFFF",
-},
-
-});
+    container: {
+      flex: 1,
+      backgroundColor: "#131313",
+      padding: 15,
+    },
+    headerWrapper: {
+      marginTop: 30,
+      marginBottom: 15,
+    },
+    header: {
+      fontSize: 28,
+      fontWeight: "700",
+      color: "#FFFFFF",
+      textAlign: "center",
+      letterSpacing: 1.5,
+    },
+    headerLine: {
+      height: 1,
+      backgroundColor: "#CFF008",
+      width: "100%",
+      marginTop: 10,
+    },
+    searchWrapper: {
+      marginTop: 0,
+      marginBottom: 20,
+      backgroundColor: "#FFFFFF",
+      borderRadius: 12,
+      padding: 12,
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    searchIcon: {
+      marginRight: 8,
+    },
+    searchInput: {
+      flex: 1,
+      color: "#000",
+      fontSize: 15,
+    },
+    categoryContainer: {
+      borderWidth: 1,
+      borderColor: "#55610eff",
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 20,
+    },
+    categoryInner: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+    },
+    categoryButton: {
+      width: 55,
+      height: 55,
+      backgroundColor: "#CFF008",
+      borderRadius: 10,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    categoryButtonActive: {
+      backgroundColor: "#FFFFFF",
+    },
+    featuredBox: {
+      borderWidth: 1,
+      borderColor: "#55610eff",
+      borderRadius: 12,
+      padding: 12,
+      flex: 1,
+    },
+    sectionTitle: {
+      color: "#FFFFFF",
+      fontSize: 18,
+      fontWeight: "700",
+    },
+    card: {
+      backgroundColor: "#1F1F1F",
+      borderRadius: 12,
+      marginBottom: 15,
+      overflow: "hidden",
+      paddingBottom: 10,
+    },
+    image: {
+      width: "100%",
+      height: 140,
+    },
+    cardContent: {
+      padding: 12,
+    },
+    title: {
+      color: "#FFFFFF",
+      fontSize: 15,
+      fontWeight: "600",
+      marginBottom: 5,
+    },
+    readMore: {
+      color: "#CFF008",
+      fontWeight: "600",
+    },
+    noResult: {
+      color: "#8F8F8F",
+      textAlign: "center",
+      marginTop: 20,
+    },
+  });

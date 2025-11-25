@@ -16,29 +16,38 @@ export default function TabsLayout() {
     chatbot: "AI Assistant",
     newsScreen: "News",
     profile: "Profile",
+    courses: "Courses",
   };
 
   const currentTitle = titles[screen ?? ""] ?? "";
+
+  // Determinar el texto del encabezado
+  // Si la pantalla actual es 'home', muestra el saludo.
+  // De lo contrario, muestra el título normal.
+  const headerText = screen === 'home' ? 'Hi, welcome back' : currentTitle;
+
 
   return (
     <View style={{ flex: 1, backgroundColor: "#050609" }}>
       {/* 🔥 HEADER FIJO GLOBAL */}
       <View
         style={{
-          paddingTop: 45,
-          paddingBottom: 12,
+          paddingTop: 65,
+          paddingBottom: 8,
           backgroundColor: "#050609",
-          alignItems: "center",
+          // ✅ CAMBIO CLAVE: Alinea a la izquierda (flex-start) solo en 'home', y centra en el resto.
+          alignItems: screen === 'home' ? 'flex-start' : 'center',
+          paddingHorizontal: 16, // Añade padding horizontal para que el texto no toque el borde
         }}
       >
         <Text
           style={{
             color: "white",
-            fontSize: 26,
+            fontSize: 25,
             fontWeight: "800",
           }}
         >
-          {currentTitle}
+          {headerText} 
         </Text>
 
         <View
@@ -95,7 +104,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="chatbot"
           options={{
-            title: "IA",
+            title: "AI",
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="chatbubble-ellipses-outline"
@@ -113,6 +122,21 @@ export default function TabsLayout() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="newspaper-outline"
+                size={size + 3}
+                color={color}
+              />
+            ),
+          }}
+        />
+
+        {/* 🔹 Courses tab, siempre visible */}
+        <Tabs.Screen
+          name="courses"
+          options={{
+            title: "Courses",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons
+                name="book-outline"
                 size={size + 3}
                 color={color}
               />
