@@ -60,7 +60,7 @@ export default function EditProfileModal({
         encoding: 'base64',
       });
 
-      if (!base64File) throw new Error("No se pudo leer la imagen.");
+      if (!base64File) throw new Error("Could not read image file");
 
       // 2. Convertir a ArrayBuffer (igual que el proyecto viejo)
       const arrayBuffer = decodeBase64(base64File);
@@ -152,7 +152,7 @@ export default function EditProfileModal({
         {/* INPUTS */}
         <TextInput
           style={styles.input}
-          placeholder="Nombre"
+          placeholder="Name"
           placeholderTextColor="#888"
           value={name}
           onChangeText={setName}
@@ -160,7 +160,7 @@ export default function EditProfileModal({
 
         <TextInput
           style={styles.input}
-          placeholder="Usuario"
+          placeholder="User"
           placeholderTextColor="#888"
           value={username}
           onChangeText={setUsername}
@@ -179,19 +179,19 @@ export default function EditProfileModal({
           <ActivityIndicator color="#8A2BE2" />
         ) : (
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.saveText}>Guardar</Text>
+            <Text style={styles.saveText}>Save</Text>
           </TouchableOpacity>
         )}
 
         <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-          <Text style={styles.cancelText}>Cancelar</Text>
+          <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-const PRIMARY = "#8A2BE2";
+const PRIMARY = "#CFF008";
 
 const styles = StyleSheet.create({
   overlay: {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: "85%",
-    backgroundColor: "#1A1A1A",
+    backgroundColor: "#111111ff",
     padding: 24,
     borderRadius: 20,
     alignItems: "center",
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   saveText: {
-    color: "#fff",
+    color: "#1a1a1aff",
     fontWeight: "600",
     fontSize: 16,
   },
