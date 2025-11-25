@@ -3,6 +3,8 @@ import { supabase } from "@/utils/supabase";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { Alert, Image, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import YoutubePlayer from "react-native-youtube-iframe";
+
 
 export default function CoursesScreen() {
   const { session } = useAuth();
@@ -202,6 +204,16 @@ export default function CoursesScreen() {
             style={styles.courseImage}
           />
           {/* Nota: cambiar la ruta por la imagen que quieras mostrar */}
+
+          {/* Video del curso */}
+            <View style={{ marginVertical: 20 }}>
+              <YoutubePlayer
+                height={220}                   // Altura del reproductor
+                play={false}                   // No reproducir automáticamente
+                videoId="HQzoZfc3GwQ"          // ID del video de YouTube
+                initialPlayerParams={{ start: 0 }} // Empieza en el tiempo que quieres (262s)
+              />
+            </View>
 
           <Text style={styles.sectionHeading}>Definition</Text>
           <Text style={styles.sectionText}>
