@@ -179,75 +179,78 @@ Mensaje del usuario:
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-    >
-      <View style={styles.container}>
-        {/* Chat */}
-        <ScrollView
-          ref={scrollViewRef}
-          style={styles.chatContainer}
-          contentContainerStyle={{ padding: 16 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          {messages.map((msg, i) => (
-            <View
-              key={i}
-              style={[
-                styles.message,
-                msg.from === "user" ? styles.userMsg : styles.botMsg,
-              ]}
-            >
-              {msg.from === "user" ? (
-                <Text style={[styles.msgText, styles.userText]}>
-                  {msg.text}
-                </Text>
-              ) : (
-                <Markdown
-                  style={{
-                    body: { color: "#FFF", fontSize: 15, lineHeight: 22 },
-                    strong: { color: "#FFF" },
-                  }}
-                >
-                  {msg.text}
-                </Markdown>
-              )}
-            </View>
-          ))}
-
-          {isLoading && (
-            <View style={{ alignItems: "center", marginVertical: 10 }}>
-              <ActivityIndicator size="small" color="#CFF008" />
-              <Text style={{ color: "#CFF008", marginTop: 5 }}>
-                IA pensando...
+  <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    keyboardVerticalOffset={tabBarHeight + 40}
+  >
+    <View style={styles.container}>
+      
+      {/* CHAT */}
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.chatContainer}
+        contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        {messages.map((msg, i) => (
+          <View
+            key={i}
+            style={[
+              styles.message,
+              msg.from === "user" ? styles.userMsg : styles.botMsg,
+            ]}
+          >
+            {msg.from === "user" ? (
+              <Text style={[styles.msgText, styles.userText]}>
+                {msg.text}
               </Text>
-            </View>
-          )}
+            ) : (
+              <Markdown
+                style={{
+                  body: { color: "#FFF", fontSize: 16, lineHeight: 22 },
+                  strong: { color: "#FFF" },
+                }}
+              >
+                {msg.text}
+              </Markdown>
+            )}
+          </View>
+        ))}
 
-          {error ? (
-            <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
-          ) : null}
-        </ScrollView>
+        {isLoading && (
+          <View style={{ alignItems: "center", marginVertical: 10 }}>
+            <ActivityIndicator size="small" color="#CFF008" />
+            <Text style={{ color: "#CFF008", marginTop: 5 }}>
+              IA pensando...
+            </Text>
+          </View>
+        )}
 
-        {/* Input */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={input}
-            onChangeText={setInput}
-            placeholder="Type something..."
-            placeholderTextColor="#777"
-            style={styles.input}
-            multiline
-          />
-          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Ionicons name="send" size={18} color="#050609" />
-          </TouchableOpacity>
-        </View>
+        {error ? (
+          <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
+        ) : null}
+      </ScrollView>
+
+      {/* INPUT FIJO */}
+      <View style={styles.inputBar}>
+        <TextInput
+          value={input}
+          onChangeText={setInput}
+          placeholder="Type Something..."
+          placeholderTextColor="#777"
+          style={styles.input}
+          multiline
+        />
+
+        <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+          <Ionicons name="send" size={22} color="#050609" />
+        </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
-  );
+    </View>
+  </KeyboardAvoidingView>
+);
+
 }
 
 const styles = StyleSheet.create({
@@ -294,22 +297,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
+  inputBar: {
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "#0A0A0A",
+  paddingHorizontal: 16,
+  paddingVertical: 12,
+  borderTopWidth: 1,
+  borderColor: "#1A1A1A",
+},
   input: {
     flex: 1,
     backgroundColor: "#111217",
-    borderRadius: 8,
+    borderRadius: 10,
     color: "white",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 14,
-    maxHeight: 120,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    minHeight: 48,
+    maxHeight: 140,
   },
   sendButton: {
     backgroundColor: "#CFF008",
-    padding: 10,
+    padding: 14,
     borderRadius: 999,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 10,
+    marginLeft: 12,
   },
 });
