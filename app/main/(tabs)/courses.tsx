@@ -1,10 +1,10 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/utils/supabase";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Alert, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
-
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function CoursesScreen() {
   const { session } = useAuth();
@@ -114,6 +114,24 @@ export default function CoursesScreen() {
 
     fetchUser();
   }, [session]);
+
+  // Refresca el usuario cuando la pantalla vuelve a foco
+  useFocusEffect(
+    useCallback(() => {
+      const refreshUser = async () => {
+        if (!session?.user) return;
+        const { data } = await supabase
+          .from("users_app")
+          .select("*")
+          .eq("email", session.user.email)
+          .single();
+
+        if (data) setUser(data);
+      };
+
+      refreshUser();
+    }, [session])
+  );
 
   if (loading) {
     return (
